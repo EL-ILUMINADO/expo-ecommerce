@@ -1,22 +1,17 @@
 import express from "express";
-import path from "path";
-import { ENV } from "./configs/env.js";
+import { ENV } from "../configs/env.js";
 
 const app = express();
 
-const __dirname = path.resolve();
-
-//
-app.use(express.static(path.join(__dirname, "../admin/dist")));
-
 app.get("/api/health", (req, res) => {
   res.status(200).json({
-    message: "Server is running",
+    message: "Server is running on Vercel!",
   });
 });
 
-app.get("/{*any}", (req, res) => {
-  res.sendFile(path.join(__dirname, "../admin", "dist", "index.html"));
-});
+export default app;
 
-app.listen(ENV.PORT, () => console.log(`Server running on port ${ENV.PORT}`));
+if (process.env.NODE_ENV !== "production") {
+  const PORT = ENV.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
