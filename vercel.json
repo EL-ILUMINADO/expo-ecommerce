@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/index.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     },
     {
@@ -11,21 +11,18 @@
       "config": { "distDir": "dist" }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/server/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "source": "/assets/(.*)",
+      "destination": "/admin/assets/$1"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/admin/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/admin/index.html"
+      "source": "/((?!api/).*)",
+      "destination": "/admin/index.html"
     }
   ]
 }
