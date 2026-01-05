@@ -9,6 +9,14 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.use("*", (req, res) => {
+  res.json({
+    error: "Route not found",
+    path_received: req.originalUrl,
+    method: req.method,
+  });
+});
+
 export default app;
 
 if (process.env.NODE_ENV !== "production") {
