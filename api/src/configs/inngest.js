@@ -6,7 +6,7 @@ export const inngest = new Inngest({ id: "lio-ecommerce" });
 
 const syncUser = inngest.createFunction(
   { id: "sync-user" },
-  { event: "clerk/user-created" },
+  { event: "clerk/user.created" },
   async ({ event }) => {
     await connectDB();
     const { id, email_addresses, first_name, last_name, image_url } =
@@ -27,7 +27,7 @@ const syncUser = inngest.createFunction(
 
 const deleteUserFromDB = inngest.createFunction(
   { id: "delete-user-from-db" },
-  { event: "clerk/user-deleted" },
+  { event: "clerk/user.deleted" },
   async ({ event }) => {
     await connectDB();
 
