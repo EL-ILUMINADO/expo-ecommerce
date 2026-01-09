@@ -31,9 +31,8 @@ export default app;
 // Only listen locally
 if (process.env.NODE_ENV !== "production") {
   const PORT = ENV.PORT || 3000;
-  app.listen(
-    PORT,
-    () => console.log(`Server running on port ${PORT}. DB connected.`),
-    connectDB()
+  await connectDB();
+  app.listen(PORT, () =>
+    console.log(`Server running on port ${PORT}. DB connected.`)
   );
 }
