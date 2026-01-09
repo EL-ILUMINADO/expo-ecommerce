@@ -1,12 +1,17 @@
 import express from "express";
 import { clerkMiddleware } from "@clerk/express";
+import { serve } from "inngest/express";
+import { functions, inngest } from "./configs/inngest.js";
 
 import { ENV } from "./configs/env.js";
-import connectDB from "./configs/db.js";
+import { connectDB } from "./configs/db.js";
 
 const app = express();
 
+app.use(express.json());
 app.use(clerkMiddleware());
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
