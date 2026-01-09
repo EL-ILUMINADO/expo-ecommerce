@@ -1,8 +1,12 @@
 import express from "express";
+import { clerkMiddleware } from "@clerk/express";
 
 import { ENV } from "./configs/env.js";
+import connectDB from "./configs/db.js";
 
 const app = express();
+
+app.use(clerkMiddleware());
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
@@ -27,5 +31,8 @@ export default app;
 // Only listen locally
 if (process.env.NODE_ENV !== "production") {
   const PORT = ENV.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  await connectDB();
+  app.listen(PORT, () =>
+    console.log(`Server running on port ${PORT}. DB connected.`)
+  );
 }
