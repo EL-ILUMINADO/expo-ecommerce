@@ -9,6 +9,8 @@ import { connectDB } from "./configs/db.js";
 import adminRoutes from "./routes/admin.route.js";
 import userRoutes from "./routes/user.route.js";
 import orderRoutes from "./routes/order.route.js";
+import reviewRoutes from "./routes/review.route.js";
+import productRoutes from "./routes/product.route.js";
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/products", productRoutes);
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
