@@ -22,11 +22,9 @@ export async function createReview(req, res) {
     }
 
     if (order.clerkId !== user.clerkId) {
-      return res
-        .status(400)
-        .json({
-          message: "You are not authorized to create a review for this order",
-        });
+      return res.status(400).json({
+        message: "You are not authorized to create a review for this order",
+      });
     }
 
     if (order.status !== "delivered") {
@@ -100,7 +98,7 @@ export async function deleteReview(req, res) {
 
     const productId = review.productId;
 
-    await review.findByIdAndDelete(reviewId);
+    await Review.findByIdAndDelete(reviewId);
 
     const reviews = await Review.find({ productId });
     const totalRating = reviews.reduce((sum, rev) => sum + rev.rating, 0);
