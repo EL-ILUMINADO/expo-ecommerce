@@ -64,16 +64,29 @@ export async function createReview(req, res) {
     });
 
     // update product rating
-    const product = await Product.findById(productId);
     const reviews = await Review.find({ productId });
     const totalRating = reviews.reduce((sum, rev) => sum + rev.rating, 0);
-    product.averageRating = totalRating / reviews.length;
-    product.totalReviews = reviews.length;
-    await product.save();
+    const updatedProduct = await Product.findByIdAndDelete(
+      productId,
+      {
+        averageRating: totalRating / reviews.length,
+        totalReviews: reviews.length,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
-    return res
-      .status(201)
-      .json({ message: "Review created successfully", review });
+    if (!updatedProduct) {
+      await Review.findByIdAndDelete(review._id);
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({
+      message: "Review created successfully",
+      review,
+    });
   } catch (error) {
     console.log("Error creating the review", error);
     return res.status(500).json({ message: "Error creating the review" });
