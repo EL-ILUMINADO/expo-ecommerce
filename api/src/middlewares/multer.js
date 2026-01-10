@@ -1,0 +1,33 @@
+import multer from "multer";
+import path from "path";
+
+const storage = multer.diskStorage({
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+// file filter
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|webp/;
+  const extName = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimeType = allowedTypes.test(file.mimetype);
+
+  if (extName && mimeType) {
+    return cb(null, true);
+  } else {
+    cb(
+      new Error(
+        "Invalid file type. Only images are allowed (jpeg, jpg, png, webp)"
+      )
+    );
+  }
+};
+
+export const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
