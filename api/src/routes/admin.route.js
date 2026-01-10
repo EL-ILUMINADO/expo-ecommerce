@@ -19,7 +19,6 @@ router.use(protectRoute, adminOnly);
 router.post("/products", upload.array("images", 5), createProduct);
 router.get("/products", getAllProducts);
 router.put("/products/:id", upload.array("images", 5), updateProduct);
-router.delete("/products/:id", deleteProduct);
 
 router.get("/orders", getAllOrders);
 router.patch("/orders/:orderId/status", updateOrderStatus);

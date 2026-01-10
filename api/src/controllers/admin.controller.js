@@ -20,12 +20,9 @@ export async function createProduct(req, res) {
     }
 
     const uploadPromises = req.files.map((file) => {
-      return (
-        cloudinary.uploader.upload(file.path),
-        {
-          folder: "products",
-        }
-      );
+      return cloudinary.uploader.upload(file.path, {
+        folder: "products",
+      });
     });
 
     const uploadResults = await Promise.all(uploadPromises);
@@ -100,14 +97,6 @@ export async function updateProduct(req, res) {
   }
 }
 
-export async function deleteProduct(req, res) {
-  try {
-  } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-}
-
 export async function getAllOrders(req, res) {
   try {
     const orders = await Order.find()
@@ -160,7 +149,9 @@ export async function updateOrderStatus(req, res) {
 
 export async function getAllCustomers(req, res) {
   try {
-    const customers = await User.find().sort({ createdAt: -1 });
+    const customers = await User.find()
+      .select("name email")
+      .sort({ createdAt: -1 });
     return res.status(200).json({ customers });
   } catch (error) {
     console.error("Error fetching customers:", error.message);
