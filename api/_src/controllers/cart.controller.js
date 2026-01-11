@@ -45,9 +45,10 @@ export async function addToCart(req, res) {
     });
 
     if (!cart) {
+      const user = req.user;
       cart = await Cart.create({
-        user: req.user._id,
-        clerkId: req.user.clerkId,
+        user: user._id,
+        clerkId: user.clerkId,
         items: [],
       });
     }
