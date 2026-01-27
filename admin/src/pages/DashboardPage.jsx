@@ -6,7 +6,7 @@ import {
   ShoppingBagIcon,
   UsersIcon,
 } from "lucide-react";
-import { capitalizeText, getOrderStatusBadge } from "../lib/utils";
+import { capitalizeText, formatDate, getOrderStatusBadge } from "../lib/utils";
 
 function DashboardPage() {
   const { data: ordersData, isLoading: ordersLoading } = useQuery({
@@ -25,7 +25,7 @@ function DashboardPage() {
       name: "Total Revenue",
       value: statsLoading
         ? "..."
-        : `$${statsData.totalRevenue.toFixed(2) || 0}`,
+        : `$${statsData?.totalRevenue?.toFixed(2) ?? "0.00"}`,
       icon: <DollarSign className="w-8 h-8" />,
     },
     {
@@ -59,7 +59,7 @@ function DashboardPage() {
       </div>
 
       {/* ORDERS */}
-      <div className="card- bg-base-100 shadow-xl">
+      <div className="card bg-base-100 shadow-xl">
         <div className={"card-body"}>
           <h2 className="card-title">Recent Orders</h2>
 
@@ -124,6 +124,8 @@ function DashboardPage() {
                           {capitalizeText(order.status)}
                         </div>
                       </td>
+
+                      <td>{formatDate(order.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>
