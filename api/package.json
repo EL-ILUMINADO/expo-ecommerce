@@ -5,7 +5,8 @@
   "main": "_src/index.js",
   "scripts": {
     "dev": "node --watch _src/index.js",
-    "start": "node _src/index.js"
+    "start": "node _src/index.js",
+    "seed:products": "node _src/seeds/index.js"
   },
   "keywords": [],
   "author": "",
