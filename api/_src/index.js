@@ -66,10 +66,12 @@ app.get("/health", (req, res) => {
 
 export default app;
 
-// Only listen locally
+// Connect to database (for both serverless and local)
+connectDB();
+
+// Only listen locally (Vercel handles this in production)
 if (process.env.NODE_ENV !== "production") {
   const PORT = ENV.PORT || 8000;
-  await connectDB();
   app.listen(PORT, () =>
     console.log(`Server running on port ${PORT}. DB connected.`),
   );
