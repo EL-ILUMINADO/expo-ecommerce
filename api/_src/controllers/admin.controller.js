@@ -45,10 +45,40 @@ export async function createProduct(req, res) {
   }
 }
 
-export async function getAllProducts(_, res) {
+export async function getAllProducts(req, res) {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    return res.status(200).json(products);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const category = req.query.category;
+
+    const skip = (page - 1) * limit;
+
+    // Build filter query
+    const filter = {};
+    if (category && category !== "All") {
+      filter.category = category;
+    }
+
+    // Get total count for pagination
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    // Get products with pagination
+    const products = await Product.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return res.status(200).json({
+      products,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalProducts,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (error) {
     console.error("Error fetching products:", error.message);
     return res.status(500).json({ message: "Internal server error" });
@@ -93,6 +123,37 @@ export async function updateProduct(req, res) {
     return res.status(200).json(product);
   } catch (error) {
     console.error("Error updating product:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function deleteProduct(req, res) {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Delete images from Cloudinary
+    if (product.images && product.images.length > 0) {
+      const deletePromises = product.images.map((imageUrl) => {
+        // Extract public_id from Cloudinary URL
+        const parts = imageUrl.split("/");
+        const filename = parts[parts.length - 1];
+        const publicId = `products/${filename.split(".")[0]}`;
+        return cloudinary.uploader.destroy(publicId);
+      });
+      await Promise.all(deletePromises);
+    }
+
+    await Product.findByIdAndDelete(id);
+
+    return res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting product:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 }

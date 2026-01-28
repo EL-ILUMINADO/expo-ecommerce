@@ -16,14 +16,26 @@ import cartRoutes from "./routes/cart.route.js";
 
 const app = express();
 
-app.use(express.json());
-app.use(clerkMiddleware());
+console.log("CLIENT_URL:", ENV.CLIENT_URL);
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.url} Origin: ${req.headers.origin}`,
+  );
+  next();
+});
+
+// Permissive CORS for debugging
 app.use(
   cors({
-    origin: ENV.CLIENT_URL,
+    origin: true, // Reflects the request origin
     credentials: true,
-  })
+  }),
 );
+
+app.use(express.json());
+app.use(clerkMiddleware());
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
@@ -56,9 +68,9 @@ export default app;
 
 // Only listen locally
 if (process.env.NODE_ENV !== "production") {
-  const PORT = ENV.PORT || 3000;
+  const PORT = ENV.PORT || 8000;
   await connectDB();
   app.listen(PORT, () =>
-    console.log(`Server running on port ${PORT}. DB connected.`)
+    console.log(`Server running on port ${PORT}. DB connected.`),
   );
 }

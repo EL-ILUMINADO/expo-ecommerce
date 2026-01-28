@@ -1,8 +1,12 @@
 import axiosInstance from "./axios";
 
 export const productApi = {
-  getAll: async () => {
-    const { data } = await axiosInstance.get("/admin/products");
+  getAll: async ({ page = 1, limit = 20, category = "All" } = {}) => {
+    const params = new URLSearchParams({ page, limit });
+    if (category && category !== "All") {
+      params.append("category", category);
+    }
+    const { data } = await axiosInstance.get(`/admin/products?${params}`);
     return data;
   },
 
