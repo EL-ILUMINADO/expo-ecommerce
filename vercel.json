@@ -20,7 +20,7 @@
     },
     {
       "source": "/((?!api/).*)",
-      "destination": "/admin/$1"
+      "destination": "/admin/index.html"
     }
   ]
 }
