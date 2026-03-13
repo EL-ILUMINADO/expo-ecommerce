@@ -165,8 +165,8 @@ function ProductsPage() {
   return (
     <div className="space-y-6">
       {/* HEADER */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-center sm:text-left">
           <h1 className="text-2xl font-bold">Products</h1>
           <p className="text-base-content/70 mt-1">
             Manage your product inventory
@@ -177,7 +177,7 @@ function ProductsPage() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="btn btn-primary gap-2"
+          className="btn btn-primary gap-2 w-full sm:w-auto"
         >
           <PlusIcon className="w-5 h-5" />
           Add Product
@@ -227,30 +227,42 @@ function ProductsPage() {
 
           return (
             <div key={product._id} className="card bg-base-100 shadow-xl">
-              <div className="card-body">
-                <div className="flex items-center gap-6">
-                  <div className="avatar">
-                    <div className="w-20 rounded-xl">
-                      <img
-                        src={product.images?.[0] ?? "/placeholder.png"}
-                        alt={product.name}
-                      />
+              <div className="card-body p-4 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                  <div className="relative w-full sm:w-auto">
+                    <div className="avatar w-full">
+                      <div className="w-full h-48 sm:w-20 sm:h-20 rounded-xl">
+                        <img
+                          src={product.images?.[0] ?? "/placeholder.png"}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className={`badge ${status.class} absolute top-2 right-2 sm:hidden z-10`}
+                    >
+                      {status.text}
                     </div>
                   </div>
 
-                  <div className="flex-1">
+                  <div className="flex-1 w-full">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="card-title">{product.name}</h3>
+                        <h3 className="card-title text-base sm:text-lg">
+                          {product.name}
+                        </h3>
                         <p className="text-base-content/70 text-sm">
                           {product.category}
                         </p>
                       </div>
-                      <div className={`badge ${status.class}`}>
+                      <div
+                        className={`badge ${status.class} hidden sm:flex sm:badge-md`}
+                      >
                         {status.text}
                       </div>
                     </div>
-                    <div className="flex items-center gap-6 mt-4">
+                    <div className="flex items-center gap-4 sm:gap-6 mt-4">
                       <div>
                         <p className="text-xs text-base-content/70">Price</p>
                         <p className="font-bold text-lg">${product.price}</p>
@@ -264,7 +276,7 @@ function ProductsPage() {
                     </div>
                   </div>
 
-                  <div className="card-actions">
+                  <div className="card-actions w-full sm:w-auto flex flex-row justify-end mt-4 sm:mt-0">
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => handleEdit(product)}
